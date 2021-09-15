@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="filterTableDataByLang" style="width: 100%" border>
+  <el-table :data="tableData" style="width: 100%" border>
     <el-table-column label="Chat ID" width="180">
       <template #default="scope">
         <span style="margin-left: 10px">{{ scope.row.name }}</span>
@@ -8,20 +8,20 @@
 
     <el-table-column label="Chat Text" width="360">
       <template #default="scope">
-        <span>{{ scope.row.language?.text || '-' }}</span>
+        <span>{{ scope.row.text || '-' }}</span>
       </template>
     </el-table-column>
 
     <el-table-column label="Chat Regex">
       <template #default="scope">
-        <el-tag type="warning">{{ scope.row.language?.regex || '-' }}</el-tag>
+        <el-tag type="warning">{{ scope.row.regex || '-' }}</el-tag>
       </template>
     </el-table-column>
 
     <el-table-column label="Chat Buttons">
       <template #default="scope">
-        <el-space wrap v-if="scope.row.language?.buttons.length > 0">
-          <el-tag v-for="(button, index) in scope.row.language?.buttons" :key="index">
+        <el-space wrap v-if="scope.row.buttons.length > 0">
+          <el-tag v-for="(button, index) in scope.row.buttons" :key="index">
             {{ button?.text || '-' }}
           </el-tag>
         </el-space>
@@ -61,27 +61,15 @@ import { ElMessage } from 'element-plus';
 
 export default defineComponent({
   props: {
-    tableData: { type: Array, default: () => [], required: true },
-    lang: { type: String, required: true }
+    tableData: { type: Array, default: () => [], required: true }
   },
-  setup(props) {
+  setup() {
     const store = useStore();
 
     const setChatbotData = (payload: ChatNode[]) =>
       store.commit('chatbot/SET_CHATBOT_DATA', payload);
 
     const search = ref('');
-
-    const filterTableDataByLang = computed(() => {
-      const { tableData, lang } = props;
-      const filterData = tableData.map((item: any) => {
-        return {
-          ...item,
-          language: item.language?.find((item: any) => item.lang === lang)
-        };
-      });
-      return filterData;
-    });
 
     const { mutate: deleteChatNode } = useMutation(deleteNodeQuery);
 
@@ -104,7 +92,7 @@ export default defineComponent({
       store.commit('chatbot/SET_EDIT_NAME', row.name);
     };
 
-    return { search, filterTableDataByLang, confirmEvent, handleEdit };
+    return { search, confirmEvent, handleEdit };
   }
 });
 </script>

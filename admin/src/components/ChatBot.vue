@@ -8,16 +8,7 @@
     </div>
 
     <div class="table" v-if="tableData">
-      <el-tabs v-model="activeName">
-        <el-tab-pane
-          v-for="(item, index) in langSetting"
-          :label="item.toUpperCase()"
-          :name="item"
-          :key="index"
-        >
-          <chat-bot-table :tableData="tableData" :lang="item" />
-        </el-tab-pane>
-      </el-tabs>
+      <chat-bot-table :tableData="tableData" />
     </div>
   </div>
 </template>
@@ -40,19 +31,6 @@ export default defineComponent({
     const langSetting = ['vi', 'en'];
     const activeName = ref('vi');
     const { result, loading } = useQuery(getAll);
-
-    /**
-     * id :
-     * language : [
-     *  {
-     *    lang : ,
-     *    text : ,
-     *    buttons : [],
-     *    conditions : [],
-     *    regex : []
-     *  }
-     * ]
-     */
 
     const setChatbotData = (payload: ChatNode[]) =>
       store.commit('chatbot/SET_CHATBOT_DATA', payload);

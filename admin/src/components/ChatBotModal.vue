@@ -11,15 +11,7 @@
       </el-form-item>
     </el-form>
 
-    <el-tabs v-model="activeName">
-      <el-tab-pane label="VI" name="vi">
-        <chat-bot-form :lang="'vi'" ref="viForm" />
-      </el-tab-pane>
-
-      <el-tab-pane label="ENG" name="eng">
-        <chat-bot-form :lang="'en'" ref="engForm" />
-      </el-tab-pane>
-    </el-tabs>
+    <chat-bot-form ref="formAdd" />
 
     <template #footer>
       <span class="dialog-footer">
@@ -79,13 +71,12 @@ export default defineComponent({
   },
   methods: {
     handleSubmitForm() {
-      const enFormValues = (this.$refs.engForm as any).submitForm('formChatBot');
-      const viFormValues = (this.$refs.viForm as any).submitForm('formChatBot');
+      const formValues = (this.$refs.formAdd as any).submitForm('formChatBot');
 
-      if (enFormValues && viFormValues) {
+      if (formValues) {
         const data = {
           name: this.chatName,
-          language: [viFormValues, enFormValues]
+          ...formValues
         };
 
         console.log(data);
@@ -98,7 +89,6 @@ export default defineComponent({
             this.handleResetForm();
 
             const newChatData: ChatNode[] = res?.data.createContent.content;
-            console.log(newChatData);
 
             this.setChatbotData(newChatData);
             ElMessage.success('Created data success');
@@ -113,8 +103,7 @@ export default defineComponent({
     handleResetForm() {
       this.chatName = '';
       this.dialogVisibleLocal = false;
-      (this.$refs.engForm as any).resetForm('formChatBot');
-      (this.$refs.viForm as any).resetForm('formChatBot');
+      (this.$refs.formAdd as any).resetForm('formChatBot');
     }
   }
 });

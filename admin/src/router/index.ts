@@ -10,11 +10,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/Auth.vue'),
     beforeEnter: checkLogin
   },
-  // {
-  //   path: '/Test',
-  //   name: 'Test',
-  //   component: () => import('@/views/Test.vue')
-  // },
   {
     path: '/dash-board',
     name: 'DashBoard',
@@ -23,12 +18,10 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: Auth.routeGuard,
     children: [
       {
-        // when /dash-board/user is matched
         path: 'user',
         component: () => import('@/components/UserComponent.vue')
       },
       {
-        // when /dash-board/chat-bot is matched
         path: 'chat-bot',
         component: () => import('@/components/ChatBot.vue')
       }

@@ -6,21 +6,21 @@ export const getAll = gql`
     getAll {
       content {
         name
-        language {
-          lang
-          buttons {
-            text
-            event
-            data
-          }
-          condition {
-            property
-            value
-            operator
-          }
+        text
+        thumb
+        price
+        sub_text
+        buttons {
           text
-          regex
+          event
+          data
         }
+        condition {
+          property
+          value
+          operator
+        }
+        regex
       }
     }
   }

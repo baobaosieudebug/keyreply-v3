@@ -94,7 +94,7 @@
             </el-row>
 
             <el-row :gutter="10" style="marginBottom : 20px">
-              <el-col :span="24" v-if="button.nextNodeConditionsData.conditions?.length > 0">
+              <el-col :span="24" v-if="button.nextNodeConditionsData.conditions.length > 0">
                 <p style="textAlign:center; marginBottom:20px">Next Node Condittions</p>
 
                 <el-table
@@ -214,7 +214,6 @@ import { filterChatbotDataByLang } from '../utils/filterData';
 import { FormData, ButtonData } from '../types/chatbotForm.interface';
 
 export default defineComponent({
-  props: ['lang'],
   setup(props) {
     const store = useStore();
 
@@ -225,7 +224,7 @@ export default defineComponent({
       text: [{ required: true, message: 'Please input chat text.', trigger: 'blur' }]
     };
 
-    const formData: FormData = reactive({
+    const formData: any = reactive({
       text: '',
       buttons: [],
       regex: '',
@@ -265,24 +264,6 @@ export default defineComponent({
       };
     });
 
-    const getFormData = () => {
-      const newButtons = formData.buttons.map((button: any) => {
-        return {
-          event: button.event,
-          data: JSON.stringify(button.data),
-          text: button.text
-        };
-      });
-
-      return {
-        text: formData.text,
-        buttons: newButtons,
-        regex: formData.regex,
-        condition: formData.condition,
-        lang: props.lang
-      };
-    };
-
     const addButton = () => {
       formData.buttons.push({
         text: '',
@@ -315,14 +296,6 @@ export default defineComponent({
       formData.condition.splice(id, 1);
     };
 
-    let filterChatbotData = reactive(filterChatbotDataByLang(chatbotData.value, props.lang));
-
-    watch(chatbotData, (value) => {
-      console.log(value);
-
-      filterChatbotData = filterChatbotDataByLang(value, props.lang);
-    });
-
     const resetCondition = (index: number) => {
       formData.buttons[index].nextNodeConditionsData = {
         name: '',
@@ -344,13 +317,26 @@ export default defineComponent({
       }
     };
 
-    const handleChangeButtonSelectData = (index: number, payload: ButtonData | string) => {
-      const nextNode: any = filterChatbotData.find((node: any) => node.name == payload);
+    const handleChangeButtonSelectData = (index: number, payload: string) => {
+      formData.buttons[index].nextNodeConditionsData.conditions = chatbotData.value.find(
+        (node: any) => node.name === payload
+      ).condition;
+    };
 
-      const nextNodeConditions = nextNode?.language?.condition || [];
-
-      formData.buttons[index].nextNodeConditionsData.conditions = nextNodeConditions;
-      formData.buttons[index].nextNodeConditionsData.name = payload;
+    const getFormData = () => {
+      const newButtons = formData.buttons.map((button: any) => {
+        return {
+          event: button.event,
+          data: JSON.stringify(button.data),
+          text: button.text
+        };
+      });
+      return {
+        text: formData.text,
+        buttons: newButtons,
+        regex: formData.regex,
+        condition: formData.condition
+      };
     };
 
     return {
@@ -364,11 +350,10 @@ export default defineComponent({
       addConditions,
       deleteButton,
       deleteCondition,
-      getFormData,
       handleChangeButtonSelectData,
       handleChangeEventButton,
-      filterChatbotData,
-      conditionOperators
+      conditionOperators,
+      getFormData
     };
   },
   methods: {

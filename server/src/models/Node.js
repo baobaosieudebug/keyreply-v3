@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
-const Language = require('./Language');
 const Button = require('./Button');
+const Condition = require('./Condition');
 
 const NodeSchema = new mongoose.Schema({
   name: String,
-  language: [Language],
   text: String,
+  thumb: String,
+  price: String,
+  sub_text: String,
   buttons: [Button],
+  condition:[Condition],
   regex: String,
 });
 

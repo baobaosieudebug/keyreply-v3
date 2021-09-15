@@ -1,30 +1,23 @@
 import gql from 'graphql-tag';
 
 export const createNodeQuery = gql`
-  mutation Mutation($createContentIdContent: String, $createContentDto: NodeInput) {
-    createContent(idContent: $createContentIdContent, dto: $createContentDto) {
+  mutation CreateContentMutation($createContentDto: NodeInput, $createContentIdContent: String) {
+    createContent(dto: $createContentDto, idContent: $createContentIdContent) {
       content {
         name
-        language {
-          lang
-          buttons {
-            event
-            text
-            data
-          }
-          condition {
-            property
-            value
-            operator
-          }
-          text
-          regex
-        }
         text
+        thumb
+        price
+        sub_text
         buttons {
           text
           event
           data
+        }
+        condition {
+          property
+          value
+          operator
         }
         regex
       }
@@ -37,20 +30,19 @@ export const deleteNodeQuery = gql`
     deleteContent(idContent: $deleteContentIdContent, name: $deleteContentName) {
       content {
         name
-        language {
-          condition {
-            property
-            value
-            operator
-          }
-          buttons {
-            text
-            event
-            data
-          }
-          lang
+        text
+        thumb
+        price
+        sub_text
+        buttons {
           text
-          regex
+          event
+          data
+        }
+        condition {
+          operator
+          value
+          property
         }
       }
     }
