@@ -1,0 +1,309 @@
+{
+  "content": [
+    {
+      "text": "Vui lòng chọn ngôn ngữ để bắt đầu?",
+      "buttons": [
+        {
+          "text": "Tiếng Việt",
+          "event": "capture",
+          "data": {
+            "key": "language_select",
+            "value": "vi",
+            "next": "conversation_welcome"
+          }
+        },
+        {
+          "text": "Tiếng Anh",
+          "event": "capture",
+          "data": {
+            "key": "language_select",
+            "value": "en",
+            "next": "conversation_welcome"
+          }
+        }
+      ],
+      "id": "conversation_start",
+      "regex": "^(language)$"
+    },
+    {
+      "name": "conversation_welcome",
+      "language": [
+        {
+          "lang": "vi",
+          "text": "Chào mừng bạn đến với cửa hàng ABC",
+          "buttons": [
+            {
+              "text": "Kết thúc mua sắm",
+              "event": "goto",
+              "data": "conversation_end"
+            },
+            { "text": "Xem Danh Sách Sản Phẩm", "event": "goto", "data": "list_items" }
+          ],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "vi",
+              "operator": "="
+            }
+          ],
+          "regex": "(xin)?cha(o*)$"
+        },
+        {
+          "lang": "en",
+          "text": "Welcome to my store ABC",
+          "buttons": [
+            {
+              "text": "Quit Shopping",
+              "event": "goto",
+              "data": "conversation_end"
+            },
+            { "text": "Show List items", "event": "goto", "data": "list_items" }
+          ],
+          "regex": "^(hi*(i)$|hello*(o)$)$",
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "en",
+              "operator": "="
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "list_items",
+      "language": [
+        {
+          "lang": "vi",
+          "text": "Danh sách sản phẩm",
+          "buttons": [
+            {
+              "text": "Bàn",
+              "thumb": "https://www.ikea.com/cz/en/images/products/ekedalen-extendable-table-dark-brown__0736963_pe740827_s5.jpg",
+              "event": "goto",
+              "data": "show_item1"
+            },
+            {
+              "text": "Ghế",
+              "thumb": "https://www.ikea.com/mx/en/images/products/stefan-chair-brown-black__0727320_pe735593_s5.jpg?f=s",
+              "event": "goto",
+              "data": "show_item2"
+            },
+            {
+              "text": "Nệm",
+              "thumb": "https://www.ikea.com/mx/en/images/products/malm-bed-frame-high-black-brown-luroey__0638608_pe699032_s5.jpg",
+              "event": "goto",
+              "data": "show_item3"
+            }
+          ],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "vi",
+              "operator": "="
+            }
+          ],
+          "regex": "san pham|danh sach"
+        },
+        {
+          "lang": "en",
+          "text": "List Items",
+          "buttons": [
+            {
+              "text": "Desk",
+              "thumb": "https://www.ikea.com/cz/en/images/products/ekedalen-extendable-table-dark-brown__0736963_pe740827_s5.jpg",
+              "event": "capture",
+              "data": {
+                "key": "item_select",
+                "value": "1",
+                "next": {
+                  "event": "goto",
+                  "data": "show_item:1"
+                }
+              }
+            },
+            {
+              "text": "Chair",
+              "thumb": "https://www.ikea.com/mx/en/images/products/stefan-chair-brown-black__0727320_pe735593_s5.jpg?f=s",
+              "event": "capture",
+              "data": {
+                "key": "item_select",
+                "value": "2",
+                "next": {
+                  "event": "goto",
+                  "data": "show_item:2"
+                }
+              }
+            },
+            {
+              "text": "Bed",
+              "thumb": "https://www.ikea.com/mx/en/images/products/malm-bed-frame-high-black-brown-luroey__0638608_pe699032_s5.jpg",
+              "event": "capture",
+              "data": {
+                "key": "item_select",
+                "value": "3",
+                "next": {
+                  "event": "goto",
+                  "data": "show_item:3"
+                }
+              }
+            }
+          ],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "en",
+              "operator": "="
+            }
+          ],
+
+          "regex": "^(list|category)"
+        }
+      ]
+    },
+    {
+      "name": "buy_item:success",
+      "language": [
+        {
+          "lang": "vi",
+          "text": "Mua hàng thành công",
+          "buttons": [
+            {
+              "text": "Xem sản phẩm khác",
+              "event": "goto",
+              "data": "list_items"
+            },
+            {
+              "text": "Kết thúc cuộc trò chuyện",
+              "event": "goto",
+              "data": "conversation_end"
+            }
+          ],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "vi",
+              "operator": "="
+            }
+          ],
+
+          "regex": "mua|thanh toan"
+        },
+        {
+          "lang": "en",
+          "text": "Order Successful",
+          "buttons": [
+            {
+              "text": "Show another items",
+              "event": "goto",
+              "data": "list_items"
+            },
+            {
+              "text": "Stopping Conversation",
+              "event": "goto",
+              "data": "conversation_end"
+            }
+          ],
+          "condition": [
+            {
+              "property": "accessToken",
+              "value": "ID_accessTOKEN",
+              "operator": "="
+            },
+            {
+              "property": "item_select",
+              "value": "item_select:id",
+              "operator": "="
+            }
+          ],
+          "regex": "^buy"
+        }
+      ]
+    },
+    {
+      "name": "not_found",
+      "language": [
+        {
+          "lang": "vi",
+          "text": "Xin lỗi , chúng tôi không hiểu được yêu cầu của quý khách, vui lòng chọn để tiếp tục",
+          "buttons": [
+            {
+              "text": "Xem Danh Sách Sản Phẩm",
+              "event": "goto",
+              "data": "list_items"
+            },
+            {
+              "text": "Kết thúc cuộc trò chuyện",
+              "event": "goto",
+              "data": "conversation_end"
+            }
+          ],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "vi",
+              "operator": "="
+            }
+          ]
+        },
+        {
+          "lang": "en",
+          "text": "Sorry , we do not understand your request, please search again or click button to continue!",
+          "buttons": [
+            {
+              "text": "Show List Items",
+              "event": "goto",
+              "data": "list_items"
+            },
+            {
+              "text": "Stopping Conversation",
+              "event": "goto",
+              "data": "conversation_end"
+            }
+          ],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "en",
+              "operator": "="
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "conversation_end",
+      "language": [
+        {
+          "lang": "vi",
+          "text": "Xin chào và hẹn gặp lại quý khách",
+          "buttons": [],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "vi",
+              "operator": "="
+            }
+          ],
+
+          "regex": "ket thuc|tam biet"
+        },
+        {
+          "lang": "en",
+          "text": "See you later",
+          "buttons": [],
+          "condition": [
+            {
+              "property": "language_select",
+              "value": "en",
+              "operator": "="
+            }
+          ],
+          "regex": "^(end|goodbye|stop)"
+        }
+      ]
+    }
+  ],
+  "version": "v1.0.1",
+  "description": "chatbot for e-commerce"
+}
