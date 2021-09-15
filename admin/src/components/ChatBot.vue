@@ -8,7 +8,7 @@
     </div>
 
     <div class="table" v-if="tableData">
-      <chat-bot-table :tableData="tableData" />
+      <chat-bot-table :tableData="tableData" @onEdit="handleEdit" />
     </div>
   </div>
 </template>
@@ -28,9 +28,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dialogVisible = ref(false);
-    const langSetting = ['vi', 'en'];
-    const activeName = ref('vi');
     const { result, loading } = useQuery(getAll);
+
+    console.log(result);
 
     const setChatbotData = (payload: ChatNode[]) =>
       store.commit('chatbot/SET_CHATBOT_DATA', payload);
@@ -41,19 +41,20 @@ export default defineComponent({
 
     const tableData = computed(() => store.getters['chatbot/getChatbotData']);
 
-    console.log(result);
-
     return {
       dialogVisible,
-      activeName,
       tableData,
-      loading,
-      langSetting
+      loading
     };
   },
   methods: {
     openModal() {
       (this.$refs.chatFormModal as any).open();
+    },
+    handleEdit() {
+      console.log('edited');
+
+      this.openModal();
     }
   }
 });

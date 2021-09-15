@@ -7,7 +7,7 @@ const httpLink = createHttpLink({
 });
 
 // Cache implementation
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({ addTypename: false });
 
 const cacheObject = {
   link: httpLink,

@@ -2,30 +2,30 @@ const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
   type Content {
-      content: [Node]
+    content: [Node]
   }
-  
+
   type Node {
     name: String
     text: String
     thumb: String
     price: String
-    sub_text: String  
+    sub_text: String
     buttons: [Button]
-    condition:[Condition]  
+    condition: [Condition]
     regex: String
   }
 
   type Button {
-      text: String
-      event: String
-      data: String
+    text: String
+    event: String
+    data: String
   }
 
   type Condition {
-      property: String
-      value: String
-      operator: String
+    property: String
+    value: String
+    operator: String
   }
 
   type Chat {
@@ -38,13 +38,12 @@ const typeDefs = gql`
     buttons: [Button]
     condition: [Condition]
   }
-  type User{
-    userId:String
-    name:String,
+  type User {
+    userId: String
+    name: String
     chatArr: [Chat]
   }
-  
-  
+
   input ButtonInput {
     text: String
     event: String
@@ -56,7 +55,7 @@ const typeDefs = gql`
     lang: String
     operator: String
   }
-  
+
   input NodeInput {
     name: String
     text: String
@@ -64,15 +63,15 @@ const typeDefs = gql`
     price: String
     sub_text: String
     buttons: [ButtonInput]
-    condition:[ConditionInput]
+    condition: [ConditionInput]
     regex: String
   }
 
   input ContentInput {
     content: [NodeInput]
   }
-  
-  input ChatInput{
+
+  input ChatInput {
     name: String
     text: String
     isBotReply: Boolean
@@ -82,23 +81,23 @@ const typeDefs = gql`
     buttons: [ButtonInput]
     condition: [ConditionInput]
   }
-  
+
   input chatArrInput {
     chatArr: [ChatInput]
   }
-  
+
   type Query {
-      getContentById(id: ID): Content
-      getAll: [Content]
-      getHistory(userId: String): User  
-    }
-    
-    type Mutation {
-      createContent(idContent: String, dto: NodeInput): Content
-      updateContent(idContent: String ,updatedNode: NodeInput): Content
-      deleteContent(idContent: String,name:String): Content
-      storeHistory(userId: String, chatArr:chatArrInput): User
-    }
+    getContentById(id: ID): Content
+    getAll: [Content]
+    getHistory(userId: String): User
+  }
+
+  type Mutation {
+    createContent(idContent: String, dto: NodeInput): Content
+    updateContent(idContent: String, updatedNode: NodeInput): Content
+    deleteContent(idContent: String, name: String): Content
+    storeHistory(userId: String, chatArr: chatArrInput): User
+  }
 `;
 
 module.exports = typeDefs;

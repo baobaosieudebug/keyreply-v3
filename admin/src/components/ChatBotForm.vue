@@ -8,6 +8,9 @@
   >
     <el-row :gutter="10">
       <el-col :span="24">
+        <el-form-item label="Chat Name" prop="name">
+          <el-input v-model="formData.name" placeholder="Ex: conversation_start..."></el-input>
+        </el-form-item>
         <el-form-item label="Chat Text" prop="text">
           <el-input v-model="formData.text" placeholder="Ex: Welcome to my store..."></el-input>
         </el-form-item>
@@ -94,7 +97,13 @@
             </el-row>
 
             <el-row :gutter="10" style="marginBottom : 20px">
-              <el-col :span="24" v-if="button.nextNodeConditionsData.conditions.length > 0">
+              <el-col
+                :span="24"
+                v-if="
+                  button.nextNodeConditionsData &&
+                    button.nextNodeConditionsData.conditions.length > 0
+                "
+              >
                 <p style="textAlign:center; marginBottom:20px">Next Node Condittions</p>
 
                 <el-table
@@ -209,12 +218,10 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { ChatNode, Language } from '../types/chatbot.interface';
-import { filterChatbotDataByLang } from '../utils/filterData';
-import { FormData, ButtonData } from '../types/chatbotForm.interface';
+import { ChatNode } from '../types/chatbot.interface';
 
 export default defineComponent({
-  setup(props) {
+  setup() {
     const store = useStore();
 
     const chatbotData = computed(() => store.getters['chatbot/getChatbotData']);
@@ -224,12 +231,20 @@ export default defineComponent({
       text: [{ required: true, message: 'Please input chat text.', trigger: 'blur' }]
     };
 
-    const formData: any = reactive({
-      text: '',
-      buttons: [],
-      regex: '',
-      condition: []
-    });
+    const editNode = computed(() => store.getters['chatbot/getEditNode']);
+
+    const formData: any =
+      editNode.value ||
+      reactive({
+        name: '',
+        text: '',
+        buttons: [],
+        regex: '',
+        condition: [],
+        price: '',
+        sub_text: '',
+        thumb: ''
+      });
 
     const buttonEvents = [
       {
@@ -318,6 +333,8 @@ export default defineComponent({
     };
 
     const handleChangeButtonSelectData = (index: number, payload: string) => {
+      console.log(formData.buttons[index]);
+
       formData.buttons[index].nextNodeConditionsData.conditions = chatbotData.value.find(
         (node: any) => node.name === payload
       ).condition;
@@ -332,10 +349,8 @@ export default defineComponent({
         };
       });
       return {
-        text: formData.text,
-        buttons: newButtons,
-        regex: formData.regex,
-        condition: formData.condition
+        ...formData,
+        buttons: newButtons
       };
     };
 

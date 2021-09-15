@@ -1,4 +1,4 @@
 export default {
-  chatbotData: []
-  // editName: ''
+  chatbotData: [],
+  editNode: null
 };

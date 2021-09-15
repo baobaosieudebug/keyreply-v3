@@ -1,16 +1,11 @@
 <template>
   <el-dialog
-    title="Create new chat"
+    :title="modalTitle"
     v-model="dialogVisibleLocal"
     width="65%"
-    :before-close="$emit('handleClose')"
+    :before-close="handleBeforeClose"
+    :destroy-on-close="true"
   >
-    <el-form label-position="top">
-      <el-form-item label="Chat Name" prop="name">
-        <el-input v-model="chatName" placeholder="Ex: conversation_start..."></el-input>
-      </el-form-item>
-    </el-form>
-
     <chat-bot-form ref="formAdd" />
 
     <template #footer>
@@ -23,8 +18,8 @@
 
 <script lang="ts">
 import { useMutation } from '@vue/apollo-composable';
-import { createNodeQuery } from '../graphql/mutations';
-import { defineComponent, ref } from 'vue';
+import { createNodeQuery, updateNodeQuery } from '../graphql/mutations';
+import { computed, defineComponent, ref } from 'vue';
 import ChatBotForm from './ChatBotForm.vue';
 import { ElMessage } from 'element-plus';
 import { ChatNode } from '../types/chatbot.interface';
@@ -40,18 +35,17 @@ interface ChatFormData {
 export default defineComponent({
   components: { ChatBotForm },
   setup() {
-    const store = useStore();
-
-    /**
-     * @params : createContentDto (Object reccive from ChatBotFrom)
-     */
     const { mutate: createNode } = useMutation(createNodeQuery);
+    const { mutate: updateNode } = useMutation(updateNodeQuery);
 
     const dialogVisibleLocal = ref(false);
-
-    const activeName = ref('vi');
-
     const chatName = ref('');
+
+    const store = useStore();
+    const editNode = computed(() => store.getters['chatbot/getEditNode']);
+    const modalTitle = computed(() => {
+      return editNode.value ? 'Edit chat' : 'Create new chat';
+    });
 
     const open = () => {
       dialogVisibleLocal.value = true;
@@ -60,50 +54,69 @@ export default defineComponent({
     const setChatbotData = (payload: ChatNode[]) =>
       store.commit('chatbot/SET_CHATBOT_DATA', payload);
 
+    const handleBeforeClose = (done: any) => {
+      store.commit('chatbot/SET_EDIT_NODE', '');
+      done();
+    };
+
     return {
+      store,
       dialogVisibleLocal,
-      activeName,
       open,
-      createNode,
       chatName,
-      setChatbotData
+      editNode,
+      modalTitle,
+      createNode,
+      updateNode,
+      setChatbotData,
+      handleBeforeClose
     };
   },
   methods: {
     handleSubmitForm() {
       const formValues = (this.$refs.formAdd as any).submitForm('formChatBot');
-
       if (formValues) {
-        const data = {
-          name: this.chatName,
-          ...formValues
-        };
+        if (this.editNode) {
+          this.handleResetForm();
 
-        console.log(data);
-
-        this.createNode({
-          createContentDto: data,
-          createContentIdContent: recordID
-        })
-          .then((res: any) => {
-            this.handleResetForm();
-
-            const newChatData: ChatNode[] = res?.data.createContent.content;
-
-            this.setChatbotData(newChatData);
-            ElMessage.success('Created data success');
+          this.updateNode({
+            updateContentUpdatedNode: formValues,
+            updateContentIdContent: recordID
           })
-          .catch((err) => {
-            ElMessage.error(err.message);
-          });
+            .then((res: any) => {
+              const newChatData: ChatNode[] = res.data.updateContent.content;
+              this.setChatbotData(newChatData);
+
+              ElMessage.success('Updated data success');
+            })
+            .catch((err) => {
+              ElMessage.error(err.message);
+            });
+        } else {
+          this.handleResetForm();
+
+          this.createNode({
+            createContentDto: formValues,
+            createContentIdContent: recordID
+          })
+            .then((res: any) => {
+              const newChatData: ChatNode[] = res?.data.createContent.content;
+
+              this.setChatbotData(newChatData);
+              ElMessage.success('Created data success');
+            })
+            .catch((err) => {
+              ElMessage.error(err.message);
+            });
+        }
       } else {
         ElMessage.error('Please fill all fields');
       }
     },
     handleResetForm() {
-      this.chatName = '';
       this.dialogVisibleLocal = false;
       (this.$refs.formAdd as any).resetForm('formChatBot');
+      this.store.commit('chatbot/SET_EDIT_NODE', '');
     }
   }
 });

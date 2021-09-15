@@ -48,3 +48,28 @@ export const deleteNodeQuery = gql`
     }
   }
 `;
+
+export const updateNodeQuery = gql`
+  mutation Mutation($updateContentIdContent: String, $updateContentUpdatedNode: NodeInput) {
+    updateContent(idContent: $updateContentIdContent, updatedNode: $updateContentUpdatedNode) {
+      content {
+        name
+        text
+        thumb
+        price
+        sub_text
+        buttons {
+          text
+          event
+          data
+        }
+        condition {
+          property
+          value
+          operator
+        }
+        regex
+      }
+    }
+  }
+`;

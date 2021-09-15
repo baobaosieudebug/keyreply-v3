@@ -33,6 +33,8 @@ const resolvers = {
     },
 
     updateContent: async (parent, { idContent, updatedNode }, context, info) => {
+      console.log(idContent, updatedNode);
+
       const record = await Content.findById(idContent);
       let isExistName = false;
       let arrContent = [];

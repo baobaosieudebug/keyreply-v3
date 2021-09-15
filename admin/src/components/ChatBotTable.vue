@@ -63,7 +63,8 @@ export default defineComponent({
   props: {
     tableData: { type: Array, default: () => [], required: true }
   },
-  setup() {
+  emits: ['onEdit'],
+  setup(props, { emit }) {
     const store = useStore();
 
     const setChatbotData = (payload: ChatNode[]) =>
@@ -89,7 +90,8 @@ export default defineComponent({
     };
 
     const handleEdit = (index: number, row: ChatNode) => {
-      store.commit('chatbot/SET_EDIT_NAME', row.name);
+      store.commit('chatbot/SET_EDIT_NODE', row.name);
+      emit('onEdit');
     };
 
     return { search, confirmEvent, handleEdit };

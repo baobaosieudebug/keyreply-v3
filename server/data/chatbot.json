@@ -26,10 +26,7 @@
           "event": "goto",
           "data": "conversation_end"
         },
-        { "text": "Show List items",
-          "event": "goto",
-          "data": "list_items"
-        }
+        { "text": "Show List items", "event": "goto", "data": "list_items" }
       ],
       "regex": "^(hi*(i)$|hello*(o)$)$",
       "condition": [
