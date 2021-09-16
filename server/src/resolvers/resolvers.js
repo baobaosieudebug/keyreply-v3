@@ -69,6 +69,33 @@ const resolvers = {
       }
       return user;
     },
+    navigateNode: async (parent,{idContent,currentNode}, context, info) => {
+      const data = await Content.findById(idContent);
+      const oldNode  = currentNode.currentNode;
+      let matchNode,temp=false;
+      if(oldNode.event === 'capture'){
+        oldNode.data= JSON.parse(oldNode.data.replace(/'/g, '"'));
+      }
+      data.content.map(item => {
+        const nameNextNode = oldNode.event === 'capture' ? oldNode.data.next : oldNode.data;
+        if(item.name === nameNextNode){
+          if(oldNode.event === 'goto') {
+            matchNode = item
+            return matchNode;
+          };
+          data.content.map(node => {
+            const condition = node.condition;
+            condition.map(cond => {
+              if(cond.property === oldNode.data.key){
+                temp = true;
+              }
+            })
+          })
+          if(temp)  matchNode = item;
+        }
+      })
+      return matchNode;
+    }
   },
 };
 

@@ -12,7 +12,7 @@ const typeDefs = gql`
     price: String
     sub_text: String
     buttons: [Button]
-    condition: [Condition]
+    condition:[Condition]
     regex: String
   }
 
@@ -38,15 +38,17 @@ const typeDefs = gql`
     buttons: [Button]
     condition: [Condition]
   }
-  type User {
-    userId: String
-    name: String
+  type User{
+    userId:String
+    name:String,
     chatArr: [Chat]
   }
+
 
   input ButtonInput {
     text: String
     event: String
+    thumb: String
     data: String
   }
 
@@ -63,15 +65,19 @@ const typeDefs = gql`
     price: String
     sub_text: String
     buttons: [ButtonInput]
-    condition: [ConditionInput]
+    condition:[ConditionInput]
     regex: String
+  }
+
+  input CurrentNode {
+    currentNode : ButtonInput
   }
 
   input ContentInput {
     content: [NodeInput]
   }
 
-  input ChatInput {
+  input ChatInput{
     name: String
     text: String
     isBotReply: Boolean
@@ -94,9 +100,10 @@ const typeDefs = gql`
 
   type Mutation {
     createContent(idContent: String, dto: NodeInput): Content
-    updateContent(idContent: String, updatedNode: NodeInput): Content
-    deleteContent(idContent: String, name: String): Content
-    storeHistory(userId: String, chatArr: chatArrInput): User
+    updateContent(idContent: String ,updatedNode: NodeInput): Content
+    deleteContent(idContent: String,name:String): Content
+    storeHistory(userId: String, chatArr:chatArrInput): User
+    navigateNode(idContent: String,currentNode: CurrentNode): Node
   }
 `;
 
