@@ -15,8 +15,10 @@ db.connect();
 
 const app = express();
 const httpServer = http.createServer(app);
+const route = require('./routes');
 
 app.use(cors());
+route(app);
 
 const server = new ApolloServer({
   typeDefs: typeDefs,
