@@ -1,0 +1,12 @@
+POST http://localhost:8000/test
+Content-Type: application/json
+
+{
+    "currentNode" : {
+        "data" : {
+            "key" : "item",
+            "value" : "3"
+        },
+        "event": "capture"
+    }
+}
